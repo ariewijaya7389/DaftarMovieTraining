@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.daftarmovie.R
+import com.example.daftarmovie.data.local.MovieDao
 import com.example.daftarmovie.data.local.MovieDatabase
 import com.example.daftarmovie.data.remote.MovieService.makeService
 import com.example.daftarmovie.model.MovieTM
@@ -25,6 +26,7 @@ class DetailMovieActivity : AppCompatActivity() {
     private lateinit var trailerRvAdapter: TrailerRvAdapter
     private lateinit var trailerList: MutableList<Trailer>
     private lateinit var movieDatabase: MovieDatabase
+    private lateinit var movieDao: MovieDao
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,6 +87,7 @@ class DetailMovieActivity : AppCompatActivity() {
 
     private fun initView(){
         movieDatabase = MovieDatabase.getInstance(this)
+        movieDao = movieDatabase.movieDao()
 
         trailerList = mutableListOf()
         trailerRvAdapter = TrailerRvAdapter(trailerList)

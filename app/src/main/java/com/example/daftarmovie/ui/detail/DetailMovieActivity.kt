@@ -30,6 +30,8 @@ class DetailMovieActivity : AppCompatActivity() {
     private lateinit var movieDatabase: MovieDatabase
     private lateinit var movieDao: MovieDao
     private lateinit var movie:MovieTM
+    private var isFavorite: Boolean = false
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,41 +42,47 @@ class DetailMovieActivity : AppCompatActivity() {
 //        val popularity = intent.getDoubleExtra("popularity",0.0)
 
         movie = intent.getParcelableExtra("movieIntent")
-        Log.i(
-            "Detail Movie",
-            "Movie title : ${movie.title}, ${movie.releaseDate}, ${movie.popularity}"
-        )
 
-        initView()
         showDetailMovie(movie)
-        fetchTrailers(movie.id)
         isMovieFavorite(movie.id)
-
         supportActionBar?.title = movie.title
+        isFavorite = isMovieFavorite(movie.id)
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.favorite_movies, menu)
+        if (isFavorite) {
+            menu?.findItem(R.id.favoriteButton)?.icon = resources
+                .getDrawable(R.drawable.ic_favorite_black_24dp)
+        } else {
+            menu?.findItem(R.id.favoriteButton)?.icon = resources
+                .getDrawable(R.drawable.ic_favorite_border_black_24dp)
+        }
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        val isFavorite =isMovieFavorite(movie.id)
+//        val isFavorite =isMovieFavorite(movie.id)
         when(item?.itemId){
             R.id.favoriteButton -> {
-                if(isFavorite){
-                    removeFromFavorite(movie.id)
-                    item.setIcon(R.drawable.ic_favorite_border_black_24dp)
-                } else {
-                    addToFavorite(movie)
-                    item.setIcon(R.drawable.ic_favorite_black_24dp)
+                when (isFavorite) {
+                    true -> {
+                        removeFromFavorite(movie.id)
+                        item.setIcon(R.drawable.ic_favorite_border_black_24dp)
+                        isFavorite = false
+                    }
+                    false -> {
+                        addToFavorite(movie)
+                        item.setIcon(R.drawable.ic_favorite_black_24dp)
+                        isFavorite = true
+                    }
                 }
             }
         }
         return super.onOptionsItemSelected(item)
     }
 
-    @SuppressLint("SetTextI18n")
     private fun showDetailMovie(movieTM: MovieTM) {
         textTitle.text = movieTM.title
         textReleaseDate.text = movieTM.releaseDate
@@ -96,7 +104,8 @@ class DetailMovieActivity : AppCompatActivity() {
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(imageViewBackdrop)
         }
-
+        initView()
+        fetchTrailers(movie.id)
     }
 
     private fun initView(){
@@ -129,12 +138,12 @@ class DetailMovieActivity : AppCompatActivity() {
     }
 
     private fun isMovieFavorite(movieId: Int):Boolean{
-        var isFavorite = false
+//        var isFavorite = false
         val result = movieDao.findMovieById(movieId)
 
         Log.d("result",result.toString())
 
-        if (result == movieId){
+        if (result == movie.id){
             isFavorite = true
         }
         return isFavorite

@@ -1,5 +1,6 @@
 package com.example.daftarmovie.ui.detail
 
+import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -21,12 +22,14 @@ import kotlinx.android.synthetic.main.activity_detail_movie.*
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.Callback
+import java.lang.Exception
 
 class DetailMovieActivity : AppCompatActivity() {
     private lateinit var trailerRvAdapter: TrailerRvAdapter
     private lateinit var trailerList: MutableList<Trailer>
     private lateinit var movieDatabase: MovieDatabase
     private lateinit var movieDao: MovieDao
+    private lateinit var movie:MovieTM
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,17 +39,18 @@ class DetailMovieActivity : AppCompatActivity() {
 //        val releaseDate = intent.getStringExtra("releaseDate")
 //        val popularity = intent.getDoubleExtra("popularity",0.0)
 
-        val movie = intent.getParcelableExtra<MovieTM>("movieIntent")
+        movie = intent.getParcelableExtra("movieIntent")
         Log.i(
             "Detail Movie",
-            "Movie title : ${movie?.title}, ${movie?.releaseDate}, ${movie?.popularity}"
+            "Movie title : ${movie.title}, ${movie.releaseDate}, ${movie.popularity}"
         )
 
         initView()
         showDetailMovie(movie)
         fetchTrailers(movie.id)
+        isMovieFavorite(movie.id)
 
-        supportActionBar?.title = movie?.title
+        supportActionBar?.title = movie.title
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -55,12 +59,22 @@ class DetailMovieActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        val isFavorite =isMovieFavorite(movie.id)
         when(item?.itemId){
-            R.id.favoriteButton -> {}
+            R.id.favoriteButton -> {
+                if(isFavorite){
+                    removeFromFavorite(movie.id)
+                    item.setIcon(R.drawable.ic_favorite_border_black_24dp)
+                } else {
+                    addToFavorite(movie)
+                    item.setIcon(R.drawable.ic_favorite_black_24dp)
+                }
+            }
         }
         return super.onOptionsItemSelected(item)
     }
 
+    @SuppressLint("SetTextI18n")
     private fun showDetailMovie(movieTM: MovieTM) {
         textTitle.text = movieTM.title
         textReleaseDate.text = movieTM.releaseDate
@@ -98,6 +112,33 @@ class DetailMovieActivity : AppCompatActivity() {
         }
     }
 
+    private fun addToFavorite(movieTM: MovieTM){
+        try {
+            movieDao.insertMovie(movieTM)
+        }catch (err: Exception){
+            Log.e("insert error.", err.localizedMessage!!)
+        }
+    }
+
+    private fun removeFromFavorite(movieId: Int){
+        try {
+            movieDao.deleteMovieById(movieId)
+        }catch (err: Exception){
+            Log.e("delete error.", err.localizedMessage!!)
+        }
+    }
+
+    private fun isMovieFavorite(movieId: Int):Boolean{
+        var isFavorite = false
+        val result = movieDao.findMovieById(movieId)
+
+        Log.d("result",result.toString())
+
+        if (result == movieId){
+            isFavorite = true
+        }
+        return isFavorite
+    }
 
     private fun fetchTrailers(movieId: Int) {
 

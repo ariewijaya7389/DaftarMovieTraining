@@ -2,7 +2,6 @@ package com.example.daftarmovie.data.local
 
 import androidx.room.Dao
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.daftarmovie.model.MovieTM
 
@@ -19,4 +18,6 @@ interface MovieDao {
 
     @Query("DELETE FROM movies WHERE id = :id")
     fun deleteMovieById(id: Int):Int
+
+
 }

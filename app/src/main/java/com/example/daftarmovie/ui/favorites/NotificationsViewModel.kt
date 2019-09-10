@@ -1,4 +1,4 @@
-package com.example.daftarmovie.ui.notifications
+package com.example.daftarmovie.ui.favorites
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

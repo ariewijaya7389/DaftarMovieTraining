@@ -23,4 +23,5 @@ interface MovieApiEndpoint {
         @Path("movie_id")movieId: Int,
         @Query("api_key")apiKey: String
     ): Call<TrailerResponse>
+
 }

@@ -8,18 +8,18 @@
     <fragment
         android:id="@+id/navigation_home"
         android:name="com.example.daftarmovie.ui.tayang.TayangMovieFragment"
-        android:label="@string/title_home"
+        android:label="Now Playing"
         tools:layout="@layout/fragment_tayang" />
 
     <fragment
         android:id="@+id/popularFragment"
         android:name="com.example.daftarmovie.ui.popular.PopularMovieFragment"
-        android:label="@string/title_dashboard"
+        android:label="Popular"
         tools:layout="@layout/fragment_popular_movies" />
 
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="com.example.daftarmovie.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        android:id="@+id/navigation_favorites"
+        android:name="com.example.daftarmovie.ui.favorites.FavoritesFragment"
+        android:label="Favorites"
+        tools:layout="@layout/fragment_favorites" />
 </navigation>

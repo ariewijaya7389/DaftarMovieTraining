@@ -27,9 +27,6 @@ class FavoritesFragment : Fragment() {
     private lateinit var movieList: MutableList<MovieTM>
     private lateinit var movieDao: MovieDao
     private lateinit var movieDatabase: MovieDatabase
-    private var isFavorite: Boolean = false
-    private lateinit var movie: MovieTM
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,11 +34,6 @@ class FavoritesFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_favorites, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
     }
 
     private fun initView() {
@@ -59,6 +51,7 @@ class FavoritesFragment : Fragment() {
         initView()
         getFavoriteMovie()
     }
+
     private fun getFavoriteMovie(){
         movieDatabase = MovieDatabase.getInstance(requireActivity())
         movieDao= movieDatabase.movieDao()
